@@ -19,10 +19,14 @@ const uploadOnCloudinary = async (localFilePath) =>{
         console.log(response.url);
         return response;
     }
-    catch(error){
-        fs.unlinkSync(localFilePath); // delete the file from local uploads folder if there is an error while uploading to cloudinary
-        console.error("Cloudinary upload error:", error.message);
-        return null;
+    catch(error) {
+        try {
+            await fs.promises.unlink(localFilePath);
+        } catch {
+        // ignore — file might already not exist
+        // don't let cleanup failure mask the original error
+        }
+    return null;
     }
 }
 
